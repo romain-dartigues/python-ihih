@@ -131,3 +131,13 @@ Parsing an INI file:
 
    ; different, resolve as: localhost:9000
    URL = localhost${http-socket}
+
+Examples in the examples directory
+##################################
+
+You can see / run the examples in the examples directory.
+
+Extending the parsers to parse INI
+==================================
+
+.. literalinclude:: ../examples/ini.py
