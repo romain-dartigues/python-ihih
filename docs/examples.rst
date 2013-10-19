@@ -10,7 +10,7 @@ overwritten by a user preferences files.
 
 Missing files are silently ignored.
 
-.. code:: python
+.. code-block:: python
 
    from ihih import IHIH
 
@@ -30,7 +30,7 @@ Reloading the conf
 
 Assuming `conf` is a :class:`~ihih.IHIH` instance.
 
-.. code:: python
+.. code-block:: python
 
    # reload on SIGHUP
    import signal
@@ -88,7 +88,7 @@ Examples of configuration files
 
 Parsing a shell script:
 
-.. code:: bash
+.. code-block:: bash
 
    # as in shell
    FOO="bar"
@@ -103,16 +103,14 @@ Parsing a shell script:
    # different
    DATE=$(date)      # resolve as: $(date)
 
-Parsing a main.cf:
-
-.. code::
+Parsing a main.cf::
 
    smtpd_banner = $myhostname ESMTP
    myhostname = foo.example.net
 
 Parsing some Python:
 
-.. code:: python
+.. code-block:: python
 
    # same
    a = 'AA'
@@ -124,11 +122,12 @@ Parsing some Python:
 
 Parsing an INI file:
 
-.. code:: ini
+.. code-block:: ini
 
-   [uwsgi]                       # ignored
+   ; section is ignored
+   [uwsgi]
    http-socket = :9090
    processes = 4
 
-   # different
-   URL = localhost${http-socket} # resolve as: localhost:9000
+   ; different, resolve as: localhost:9000
+   URL = localhost${http-socket}

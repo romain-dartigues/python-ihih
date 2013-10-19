@@ -4,7 +4,7 @@ PYTHON=python
 DOCTARGET=html
 
 check:
-	PYTHONPATH=$(PWD) $(PYTHON) test/test_ihih.py || exit $$?
+	PYTHONPATH=$(PWD) $(PYTHON) test/test_ihih.py
 
 egg: clean
 	$(PYTHON) setup.py sdist bdist_egg

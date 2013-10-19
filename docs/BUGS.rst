@@ -13,13 +13,13 @@ Unicode is only partially supported, for example it is *not* supported to
 pre-populate the configuration object with :py:func:`unicode`;
 see `not a true dict`_.
 
-It also assume all files use the same encoding (default to UTF8,
+It also assumes all files use the same encoding (default to UTF8,
 or at least ASCII7).
 
 Not a true dict
 ###############
 
-The configuration objects does not behave like a true :py:class:`dict`,
+The configuration objects do not behave like a true :py:class:`dict`,
 especially:
 
 No type conversion on some methods
@@ -30,7 +30,7 @@ Type conversion is not supported, at least, on:
 * pre-population / initialization (ie: ``IHIHI((), {'a': 'b'})``)
 * functions: ``pop``, ``popitem``, ``setdefault``, ``update``
 
-.. code:: python
+.. code-block:: python
 
    # this will not work as expected (yet)
    conf = IHIHI('file.conf', {'pi': 3.14, 'lang': u'中文', u'中文': 'Chinese'})
@@ -50,6 +50,8 @@ Type conversion is not supported, at least, on:
 
    # now you can
    conf['test'] = u'$pi, $lang, $中文!'
+
+   print conf.get_unicode('test') # resolve as: 3.14, 中文, Chinese!
 
 .. _single-line_only:
 
