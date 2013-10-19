@@ -8,7 +8,7 @@ configuration parsers (for Python) with a dictionary-like interface.
 It try to be flexible and let you alter the syntax by sub-classing it.
 
 More informations can be found in the docs directory or
-`online <https://p0d.org/python-ihih/>`_.
+`online <http://python-ihih.readthedocs.org/>`_.
 
 Features
 ########

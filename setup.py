@@ -10,6 +10,8 @@ import ihih
 
 
 
+home = 'https://github.com/romain-dartigues/python-ihih'
+
 distutils.core.setup(
 	name='ihih',
 	version=ihih.__version__,
@@ -18,8 +20,8 @@ distutils.core.setup(
 	author='Romain Dartigues',
 	license='BSD 3-Clause License',
 	keywords='conf config configuration parser',
-	url='https://p0d.org/python-ihih/',
-	download_url='https://github.com/romain-dartigues/python-ihih',
+	url=home,
+	download_url=home,
 	classifiers=(
 		'Development Status :: 4 - Beta',
 		'Environment :: Plugins',

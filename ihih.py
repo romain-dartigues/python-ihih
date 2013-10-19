@@ -1,7 +1,8 @@
 #!/usr/bin/python
 '''ihih - simple configuration parsers with dictionary-like interface
 
-License: `BSD 3-Clause <http://opensource.org/licenses/BSD-3-Clause>`_
+:Source code: `GitHub project <https://github.com/romain-dartigues/python-ihih>`_
+:License: `BSD 3-Clause <http://opensource.org/licenses/BSD-3-Clause>`_
 '''
 
 
