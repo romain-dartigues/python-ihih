@@ -2,8 +2,8 @@
 ihih
 ####
 
-:abbr:`ihih (I Hate INI hacks)` is an attempt to provide simple
-configuration parsers (for Python) with a dictionary-like interface.
+ihih is an attempt to provide simple configuration parsers (for Python) with a
+dictionary-like interface.
 
 It try to be flexible and let you alter the syntax by sub-classing it.
 
@@ -38,7 +38,7 @@ Dictionary-like interface
 
 Example:
 
-.. code:: pycon
+.. code-block:: python
 
    >>> print conf['my_banner']
    server.example.net MY-PROGRAM
@@ -49,7 +49,7 @@ Configuration precedence
 In the following example, user configuration file will take precedence over
 system-wide configuration file:
 
-.. code:: python
+.. code-block:: python
 
    conf = IHIH(
       (
@@ -63,7 +63,7 @@ Default on the initialization
 
 Example:
 
-.. code:: python
+.. code-block:: python
 
    conf = IHIH(
       '/etc/example.conf',
