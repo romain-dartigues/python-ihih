@@ -46,7 +46,7 @@ class SimpleConf(unittest.TestCase):
 	def test_quoting_escaped(self):
 		self.ihih[self.key(True)] = r'''"\"''"'''
 		self.assertEqual(self.ihih[self.key()], '"\'\'')
-		
+
 
 	def test_escaping(self):
 		self.ihih[self.key(True)] = r'\r\n\0\"\$'
@@ -88,6 +88,42 @@ class SimpleConf(unittest.TestCase):
 		self.assertEqual(self.ihih[str(f)], str(f))
 		self.assertEqual(self.ihih.get(f), str(f))
 		self.assertEqual(self.ihih.get_float(f), f)
+
+
+	def test_comments(self):
+		self.ihih[self.key(True)] = 'value # with comment'
+		self.assertEqual(self.ihih[self.key()], 'value')
+
+		self.ihih[self.key(True)] = 'value // with comment'
+		self.assertEqual(self.ihih[self.key()], 'value')
+
+
+	def test_comments_escaped(self):
+		self.ihih[self.key(True)] = r'value with \# # and a comment'
+		self.assertEqual(self.ihih[self.key()], 'value with #')
+
+		self.ihih[self.key(True)] = r'value with \// /\/ \/\/ // and a comment'
+		self.assertEqual(self.ihih[self.key()], 'value with // // //')
+
+
+	def test_quoting_comments(self):
+		example_url = 'http://example.com/'
+
+		self.ihih[self.key(True)] = example_url
+		self.assertEqual(self.ihih[self.key()], 'http:')
+
+		self.ihih[self.key(True)] = '"' + example_url + '"'
+		self.assertEqual(self.ihih[self.key()], example_url)
+
+		self.ihih[self.key(True)] = "'" + example_url + "'"
+		self.assertEqual(self.ihih[self.key()], example_url)
+
+	def test_comments_quotes(self):
+		self.ihih[self.key(True)] = 'a # b "c"'
+		self.assertEqual(self.ihih[self.key()], 'a')
+
+		self.ihih[self.key(True)] = 'a#b "c"'
+		self.assertEqual(self.ihih[self.key()], 'a')
 
 
 

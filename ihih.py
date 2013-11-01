@@ -43,7 +43,7 @@ class IHIH(dict):
 
 	_separator = r'\='
 	'''regexp definition of key/value separator
-	
+
 	Must be a fixed-width expression.'''
 
 	_extract = r'''^\s*
@@ -63,7 +63,7 @@ class IHIH(dict):
 		'''attempt to parse a list of filenames
 
 		Parameters:
-		
+
 		- `filenames` -- if is a string, it is treated as a single
 		  file, otherwise it is treated as an iterable
 		- other parameters are passed to the :py:class:`dict` constructor
@@ -111,7 +111,7 @@ class IHIH(dict):
 
 	def parse(self, filename, force=False):
 		'''parse a configuration file
-		
+
 		.. Note::
 		   `filename` should be an absolute path.
 		'''
@@ -160,12 +160,10 @@ class IHIH(dict):
 			prev = escaped.end()
 
 		if escaped and escaped.end() < len(value):
-			data+= enc(
-				self._strip_comment(value[escaped.end():])
-			)
+			data+= enc(value[escaped.end():])
 
 		elif not escaped:
-			data+= enc(self._strip_comment(value))
+			data+= enc(value)
 
 		return data
 
@@ -177,19 +175,19 @@ class IHIH(dict):
 		return self._unescape(fragment, quote)
 
 
-	def _strip_comment(self, value):
-		'''remove the comment on value'''
+	def _comment_at(self, value):
+		'return the position of the begining of a comment'
 		comment = self.r_comment.search(value)
-		return value[:comment.start() if comment else None]
+		return comment and comment.start()
 
 
 	def _parse_value(self, value, data):
 		'''parse the "value" part of a "key / value"
 
-		This function handle the quoted parts.
-		
+		This function handle the quoted parts and the comments.
+
 		Parameters:
-			
+
 		- `value` (:py:func:`basestring` instance): value to parse
 		- `data`: instance supporting ``+=`` operator
 		'''
@@ -198,10 +196,23 @@ class IHIH(dict):
 
 		for quoted in self.r_quoted.finditer(value):
 			if quoted.start() > prev:
-				data+= self._handle_fragment(
+				# unquoted part before a quoted fragment
+				comment_at = self._comment_at(
 					value[prev:quoted.start()]
 				)
+				data+= self._handle_fragment(
+					value[
+						prev
+						:
+						quoted.start()
+						if comment_at is None
+						else comment_at
+					]
+				)
+				if comment_at is not None:
+					break
 
+			# quoted fragment
 			data+= self._handle_fragment(
 				quoted.group('value'),
 				quoted.group('quote')
@@ -209,10 +220,20 @@ class IHIH(dict):
 			prev = quoted.end()
 
 		if quoted and quoted.end() < len(value):
-			data+= self._handle_fragment(value[quoted.end():])
+			# there is unquoted string after the quoted one
+			data+= self._handle_fragment(
+				value[
+					quoted.end()
+					:
+					self._comment_at(value[quoted.end():])
+				]
+			)
 
 		elif not quoted:
-			data+= self._handle_fragment(value)
+			# nothing was quoted
+			data+= self._handle_fragment(
+				value[:self._comment_at(value)]
+			)
 
 		return data
 
@@ -281,7 +302,7 @@ class IHIH(dict):
 	def get_str(self, key, default=None):
 		'''return `key` value as :py:func:`str`
 		or `default` if not found
-		
+
 		.. Note::
 		   The `key` will be casted as :py:func:`str`
 		   (see: :meth:`_cast_str`).
@@ -300,7 +321,7 @@ class IHIH(dict):
 		if not found
 
 		The `errors` parameter is passed to :py:meth:`str.decode`.
-		
+
 		.. Note::
 		   The `key` will be casted as :py:func:`str`
 		   (see: :meth:`_cast_str`).
@@ -316,7 +337,7 @@ class IHIH(dict):
 
 		If `errors` is "ignore", return `default` value instead of
 		raising :py:exc:`~exceptions.TypeError` on failure.
-		
+
 		.. Note::
 		   The `key` will be casted as :py:func:`str`
 		   (see: :meth:`_cast_str`).
@@ -429,7 +450,7 @@ class IHIHI(IHIH):
 
 	def _recursive(self, value):
 		'''recursive variable handler
-		
+
 		Default: empty string
 
 		You can overwrite this function when subclassing
