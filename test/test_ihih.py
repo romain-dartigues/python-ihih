@@ -126,6 +126,20 @@ class SimpleConf(unittest.TestCase):
 		self.assertEqual(self.ihih[self.key()], 'a')
 
 
+	def test_get_bool(self):
+		self.ihih[self.key(True)] = 'yes # comment'
+		self.assertEqual(self.ihih.get_bool(self.key()), True)
+
+		self.ihih[self.key(True)] = 'False # comment'
+		self.assertEqual(self.ihih.get_bool(self.key()), False)
+
+		self.ihih[self.key(True)] = 'unknown'
+		self.assertEqual(self.ihih.get_bool(self.key(), 'na'), 'na')
+
+		self.ihih[self.key(True)] = ''
+		self.assertEqual(self.ihih.get_bool(self.key()), None)
+
+
 
 class Interpolated(SimpleConf):
 	def setUp(self):

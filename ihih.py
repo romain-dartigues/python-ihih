@@ -58,6 +58,9 @@ class IHIH(dict):
 	_quoted = r'%(escape)s(?P<quote>%(quote)s)(?P<value>.*?)%(escape)s(?P=quote)'
 	'''how to find a quoted value'''
 
+	_bool = r'^(?P<false>0|no|false|off|disabled)|(?P<true>1|yes|true|on|enabled)$'
+	'regexp definition of a boolean value (used by :meth:`get_bool`)'
+
 
 	def __init__(self, filenames, *args, **kwargs):
 		'''attempt to parse a list of filenames
@@ -89,6 +92,7 @@ class IHIH(dict):
 		self.r_escaped = re.compile(
 			self._escaped % self._escaped_chars
 		)
+		self.r_bool = re.compile(self._bool, re.I)
 
 		if isinstance(filenames, basestring):
 			self.__source = (os.path.realpath(filenames),)
@@ -348,6 +352,17 @@ class IHIH(dict):
 			except:
 				if errors != 'ignore':
 					raise
+		return default
+
+
+	def get_bool(self, key, default=None):
+		'''attempt to coerce `key` value to a boolean
+		accordingly :attr:`_bool` rules
+		'''
+		if key in self:
+			match = self.r_bool.search(self.get_str(key))
+			if match:
+				return True if match.group('true') else False
 		return default
 
 
