@@ -27,6 +27,9 @@ class IHIH(dict):
 
 	One key/value pair per line.
 	'''
+	ignore_IOError = False
+	'''do not stop on IOError when reading sources'''
+
 	encoding = 'utf8'
 	'''define the encoding'''
 
@@ -62,13 +65,14 @@ class IHIH(dict):
 	'regexp definition of a boolean value (used by :meth:`get_bool`)'
 
 
-	def __init__(self, filenames, *args, **kwargs):
+	def __init__(self, filenames, _ignore_IOError=False, *args, **kwargs):
 		'''attempt to parse a list of filenames
 
 		Parameters:
 
 		- `filenames` -- if is a string, it is treated as a single
 		  file, otherwise it is treated as an iterable
+		- `_ignore_IOError` -- fail silently on IOError
 		- other parameters are passed to the :py:class:`dict` constructor
 		'''
 		dict.__init__(self, *args, **kwargs)
@@ -104,21 +108,25 @@ class IHIH(dict):
 
 		self.__mtime = {}
 
+		self.ignore_IOError = _ignore_IOError
 		return self.reload()
 
 
-	def reload(self, force=False):
+	def reload(self, force=False, ignore_IOError=None):
 		'''call :meth:`parse` on each configuration file'''
 		for filename in self.__source:
-			self.parse(filename, force)
+			self.parse(filename, force, ignore_IOError)
 
 
-	def parse(self, filename, force=False):
+	def parse(self, filename, force=False, ignore_IOError=None):
 		'''parse a configuration file
 
 		.. Note::
 		   `filename` should be an absolute path.
 		'''
+		if ignore_IOError is None:
+			ignore_IOError = self.ignore_IOError
+
 		try:
 			mtime = os.stat(filename).st_mtime
 		except:
@@ -129,7 +137,14 @@ class IHIH(dict):
 			# file did not change
 			return None
 
-		for i, line in enumerate(open(filename)):
+		try:
+			fo = open(filename)
+		except IOError as error:
+			if ignore_IOError:
+				return False
+			raise
+
+		for i, line in enumerate(fo):
 			results = self.r_extract.match(line)
 			if results:
 				self[results.group('key')] = results \
