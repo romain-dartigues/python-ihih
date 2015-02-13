@@ -140,6 +140,15 @@ class SimpleConf(unittest.TestCase):
 		self.assertEqual(self.ihih.get_bool(self.key()), None)
 
 
+	def test_get_float(self):
+		self.ihih[self.key(True)] = '3.14'
+		self.assertEqual(self.ihih.get_float(self.key()), 3.14)
+
+		self.ihih[self.key(True)] = '314e-2'
+		self.assertEqual(self.ihih.get_float(self.key()), 3.14)
+
+		self.ihih[self.key(True)] = '-0'
+		self.assertEqual(self.ihih.get_float(self.key()), -0.0)
 
 class Interpolated(SimpleConf):
 	def setUp(self):
