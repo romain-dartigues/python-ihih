@@ -299,7 +299,8 @@ class IHIH(dict):
 		'''return `key` value as internal type
 
 		You probably want to use one of the following:
-		:meth:`get_str`, :meth:`get_unicode`, :meth:`get_float`.
+		:meth:`get_str`, :meth:`get_unicode`, :meth:`get_float`,
+		:meth:`get_int`.
 
 		.. Note::
 		   The `key` will be casted as :py:func:`str`
@@ -364,6 +365,26 @@ class IHIH(dict):
 		if key in self:
 			try:
 				return float(self[key])
+			except:
+				if errors != 'ignore':
+					raise
+		return default
+
+
+	def get_int(self, key, default=None, errors='strict', base=10):
+		'''return `key` value as :py:func:`int` or `default`
+		if not found
+
+		If `errors` is "ignore", return `default` value instead of
+		raising :py:exc:`~exceptions.TypeError` on failure.
+
+		.. Note::
+		   The `key` will be casted as :py:func:`str`
+		   (see: :meth:`_cast_str`).
+		'''
+		if key in self:
+			try:
+				return int(self.get_str(key), base)
 			except:
 				if errors != 'ignore':
 					raise

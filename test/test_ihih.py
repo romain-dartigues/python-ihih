@@ -150,6 +150,31 @@ class SimpleConf(unittest.TestCase):
 		self.ihih[self.key(True)] = '-0'
 		self.assertEqual(self.ihih.get_float(self.key()), -0.0)
 
+
+	def test_get_int(self):
+		self.ihih[self.key(True)] = '42'
+		self.assertEqual(self.ihih.get_int(self.key()), 42)
+
+		self.ihih[self.key(True)] = ' 42 '
+		self.assertEqual(self.ihih.get_int(self.key()), 42)
+
+		self.ihih[self.key(True)] = '2a'
+		self.assertEqual(self.ihih.get_int(self.key(), base=16), 42)
+
+		self.ihih[self.key(True)] = ' 0x2a '
+		self.assertEqual(self.ihih.get_int(self.key(), base=16), 42)
+
+		self.ihih[self.key(True)] = '52'
+		self.assertEqual(self.ihih.get_int(self.key(), base=8), 42)
+
+		self.ihih[self.key(True)] = ' 052 '
+		self.assertEqual(self.ihih.get_int(self.key(), base=8), 42)
+
+		self.ihih[self.key(True)] = '42.0'
+		self.assertRaises(ValueError, self.ihih.get_int, self.key())
+
+
+
 class Interpolated(SimpleConf):
 	def setUp(self):
 		self.ihih = ihih.IHIHI(())
