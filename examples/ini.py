@@ -42,12 +42,16 @@ class IHIHINI(IHIH):
 	__getitem__ = dict.__getitem__
 
 
-	def parse(self, filename, force=False):
+	def parse(self, filename, force=False, ignore_IOError=True):
 		section = None
-		if not os.access(filename, os.R_OK):
-			return False
+		try:
+			fo = open(filename)
+		except IOError:
+			if ignore_IOError:
+				return False
+			raise
 
-		for i, line in enumerate(open(filename)):
+		for line in fo:
 			results = self.r_section.match(line)
 			if results:
 				section = results.group(1)

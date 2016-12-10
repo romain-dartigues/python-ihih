@@ -109,7 +109,7 @@ class IHIH(dict):
 		self.__mtime = {}
 
 		self.ignore_IOError = _ignore_IOError
-		return self.reload()
+		self.reload()
 
 
 	def reload(self, force=False, ignore_IOError=None):
@@ -129,8 +129,8 @@ class IHIH(dict):
 
 		try:
 			mtime = os.stat(filename).st_mtime
-		except:
-			# file not found
+		except OSError:
+			# file not found / permission denied...
 			return False
 
 		if mtime <= self.__mtime.get(filename, 0) and not force:
@@ -139,12 +139,12 @@ class IHIH(dict):
 
 		try:
 			fo = open(filename)
-		except IOError as error:
+		except IOError:
 			if ignore_IOError:
 				return False
 			raise
 
-		for i, line in enumerate(fo):
+		for line in fo:
 			results = self.r_extract.match(line)
 			if results:
 				self[results.group('key')] = results \
@@ -259,7 +259,7 @@ class IHIH(dict):
 
 	def _cast_str(self, value):
 		'''return a string representation of `value`'''
-		if type(value) is str:
+		if isinstance(value, str):
 			return value
 		if isinstance(value, unicode):
 			return value.encode(self.encoding)
@@ -365,7 +365,7 @@ class IHIH(dict):
 		if key in self:
 			try:
 				return float(self[key])
-			except:
+			except TypeError:
 				if errors != 'ignore':
 					raise
 		return default
@@ -385,7 +385,7 @@ class IHIH(dict):
 		if key in self:
 			try:
 				return int(self.get_str(key), base)
-			except:
+			except TypeError:
 				if errors != 'ignore':
 					raise
 		return default
@@ -418,7 +418,7 @@ class IHIHI(IHIH):
 			re.UNICODE
 		)
 
-		return super(IHIHI, self).__init__(*args, **kwargs)
+		super(IHIHI, self).__init__(*args, **kwargs)
 
 
 	def __setitem__(self, key, value):
@@ -471,7 +471,7 @@ class IHIHI(IHIH):
 		return data
 
 
-	def __getitem__(self, key, path=None):
+	def __getkey(self, key, path=None):
 		'''return `key` value as internal type
 		with interpolated variables
 
@@ -491,12 +491,16 @@ class IHIHI(IHIH):
 					value+= self._recursive(sub)
 
 				else:
-					value+= self.__getitem__(sub, path)
+					value+= self.__getkey(sub, path)
 			else:
 				value+= sub
 
 		path.remove(key)
 		return value
+
+
+	def __getitem__(self, key):
+		return self.__getkey(key)
 
 
 	def _recursive(self, value):
