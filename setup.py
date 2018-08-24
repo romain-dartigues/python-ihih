@@ -1,7 +1,13 @@
 #!/usr/bin/python
-import distutils.core
 import os
 import sys
+
+try:
+	from setuptools import setup
+except ImportError:
+	import warnings
+	warnings.warn('setuptools not found, falling back to distutils')
+	from distutils.core import setup
 
 sys.path.insert(0, os.path.dirname(__file__))
 import ihih
@@ -12,7 +18,7 @@ import ihih
 
 home = 'https://github.com/romain-dartigues/python-ihih'
 
-distutils.core.setup(
+setup(
 	name='ihih',
 	version=ihih.__version__,
 	description='Configuration parsers with lazy parameters evaluation',
