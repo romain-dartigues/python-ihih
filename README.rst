@@ -1,5 +1,5 @@
 ####
-ihih
+ihih |build| |coverage| |docs|
 ####
 
 ihih is an attempt to provide simple configuration parsers (for Python) with a
@@ -9,6 +9,18 @@ It try to be flexible and let you alter the syntax by sub-classing it.
 
 More informations can be found in the docs directory or
 `online <http://python-ihih.readthedocs.org/>`_.
+
+.. |build| image:: https://travis-ci.org/romain-dartigues/python-ihih.svg
+   :alt: Build status
+   :target: https://travis-ci.org/romain-dartigues/python-ihih
+
+.. |docs| image:: https://readthedocs.org/projects/python-ihih/badge/
+   :alt: Documentation status
+   :target: https://python-ihih.readthedocs.io/
+
+.. |coverage| image:: https://codecov.io/gh/romain-dartigues/python-ihih/branch/master/graph/badge.svg
+   :alt: Code coverage
+   :target: https://codecov.io/gh/romain-dartigues/python-ihih
 
 Features
 ########
